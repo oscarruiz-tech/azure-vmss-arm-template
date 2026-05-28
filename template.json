@@ -1,0 +1,472 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineScaleSets_VMSS_1_name": {
+            "defaultValue": "VMSS-1",
+            "type": "String"
+        },
+        "networkSecurityGroups_basicNsgvnet_eastus_nic01_externalid": {
+            "defaultValue": "/subscriptions/de646d6b-5b74-4471-a59d-1d40c5e06cda/resourceGroups/GL-VMSS-RG/providers/Microsoft.Network/networkSecurityGroups/basicNsgvnet-eastus-nic01",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_eastus_externalid": {
+            "defaultValue": "/subscriptions/de646d6b-5b74-4471-a59d-1d40c5e06cda/resourceGroups/GL-VMSS-RG/providers/Microsoft.Network/virtualNetworks/vnet-eastus",
+            "type": "String"
+        },
+        "loadBalancers_Loadbalancer1_externalid": {
+            "defaultValue": "/subscriptions/de646d6b-5b74-4471-a59d-1d40c5e06cda/resourceGroups/GL-VMSS-RG/providers/Microsoft.Network/loadBalancers/Loadbalancer1",
+            "type": "String"
+        },
+        "disks_VMSS_1_VMSS_1_0_disk1_171830bca6b54b24b9b87bfff05abe2c_externalid": {
+            "defaultValue": "/subscriptions/de646d6b-5b74-4471-a59d-1d40c5e06cda/resourceGroups/GL-VMSS-RG/providers/Microsoft.Compute/disks/VMSS-1_VMSS-1_0_disk1_171830bca6b54b24b9b87bfff05abe2c",
+            "type": "String"
+        },
+        "disks_VMSS_1_VMSS_1_1_disk1_f1266615be654487b19d779c85067cda_externalid": {
+            "defaultValue": "/subscriptions/de646d6b-5b74-4471-a59d-1d40c5e06cda/resourceGroups/GL-VMSS-RG/providers/Microsoft.Compute/disks/VMSS-1_VMSS-1_1_disk1_f1266615be654487b19d779c85067cda",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "apiVersion": "2025-04-01",
+            "name": "[parameters('virtualMachineScaleSets_VMSS_1_name')]",
+            "location": "eastus",
+            "sku": {
+                "name": "Standard_D2s_v3",
+                "tier": "Standard",
+                "capacity": 2
+            },
+            "properties": {
+                "singlePlacementGroup": false,
+                "orchestrationMode": "Uniform",
+                "upgradePolicy": {
+                    "mode": "Manual"
+                },
+                "scaleInPolicy": {
+                    "rules": [
+                        "Default"
+                    ],
+                    "forceDeletion": false
+                },
+                "virtualMachineProfile": {
+                    "osProfile": {
+                        "computerNamePrefix": "vmss-1v3p",
+                        "linuxConfiguration": {
+                            "disablePasswordAuthentication": true,
+                            "ssh": {
+                                "publicKeys": [
+                                    {
+                                        "path": "/home/azureuser/.ssh/authorized_keys",
+                                        "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVNXwbA51M3HB93HdHE/E3fVKrcPyq+2/LddCLokXidpgOMLvjvOXTO17dotCGc7mnCiLhBvRJ9E/lEGPa8ug/RVgUUeyIDhFsXpc5OSZ28PNAbjvOZVLzFJAqvHZgB1wnLjCsGCqJkITJBz5iTgHcIg8a5o5y4PFWZyHZ8Dv6sfzmtBudncsMyNcbyt3bkiNuijejj7rlwlznexfMjXHLyPEMWv0s0mLVRCYJY6+vt4B4lzv6cHtv/hdpitz6Luk/N1eDgIqH1foAJeIh+ag4fl+zzYX8aOwKwc6UdzWxOuwWa9fcgRgn8yZi4L2VURmdKhmVfvGi3hN5dJDMCTJiSKix5TesJMwn7jE8dokt9ssWQ4C+ckhc0tFf5knJkDeRZXuGLpje+CveXgSX6H/lBN0Zcn9h284WkPnEmNRQI99GXadXHO3g8LuuOi8iveAlDGLGsjlPTyefya4x+nGlsN7dFUm7l0zyGv7WqtWXTbEUlqXqfKIHJmECb8gbyG0= generated-by-azure"
+                                    }
+                                ]
+                            },
+                            "provisionVMAgent": true
+                        },
+                        "secrets": [],
+                        "allowExtensionOperations": true,
+                        "requireGuestProvisionSignal": true,
+                        "adminUsername": "azureuser"
+                    },
+                    "storageProfile": {
+                        "osDisk": {
+                            "osType": "Linux",
+                            "createOption": "FromImage",
+                            "caching": "ReadWrite",
+                            "managedDisk": {
+                                "storageAccountType": "Premium_LRS"
+                            },
+                            "diskSizeGB": 30
+                        },
+                        "imageReference": {
+                            "publisher": "canonical",
+                            "offer": "ubuntu-24_04-lts",
+                            "sku": "server",
+                            "version": "latest"
+                        },
+                        "diskControllerType": "SCSI"
+                    },
+                    "networkProfile": {
+                        "networkInterfaceConfigurations": [
+                            {
+                                "name": "vnet-eastus-nic01",
+                                "properties": {
+                                    "primary": true,
+                                    "enableAcceleratedNetworking": true,
+                                    "disableTcpStateTracking": false,
+                                    "networkSecurityGroup": {
+                                        "id": "[parameters('networkSecurityGroups_basicNsgvnet_eastus_nic01_externalid')]"
+                                    },
+                                    "dnsSettings": {
+                                        "dnsServers": []
+                                    },
+                                    "enableIPForwarding": false,
+                                    "ipConfigurations": [
+                                        {
+                                            "name": "vnet-eastus-nic01-defaultIpConfiguration",
+                                            "properties": {
+                                                "primary": true,
+                                                "subnet": {
+                                                    "id": "[concat(parameters('virtualNetworks_vnet_eastus_externalid'), '/subnets/snet-eastus-1')]"
+                                                },
+                                                "privateIPAddressVersion": "IPv4",
+                                                "loadBalancerBackendAddressPools": [
+                                                    {
+                                                        "id": "[concat(parameters('loadBalancers_Loadbalancer1_externalid'), '/backendAddressPools/bepool')]"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "diagnosticsProfile": {
+                        "bootDiagnostics": {
+                            "enabled": true
+                        }
+                    },
+                    "extensionProfile": {
+                        "extensions": [
+                            {
+                                "name": "HealthExtension",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "enableAutomaticUpgrade": true,
+                                    "publisher": "Microsoft.ManagedServices",
+                                    "type": "ApplicationHealthLinux",
+                                    "typeHandlerVersion": "1.0",
+                                    "settings": {
+                                        "protocol": "http",
+                                        "port": 80,
+                                        "intervalInSeconds": 5,
+                                        "numberOfProbes": 1,
+                                        "requestPath": "/health.html"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "securityProfile": {
+                        "uefiSettings": {
+                            "secureBootEnabled": true,
+                            "vTpmEnabled": true
+                        },
+                        "securityType": "TrustedLaunch"
+                    }
+                },
+                "overprovision": false,
+                "doNotRunExtensionsOnOverprovisionedVMs": false,
+                "platformFaultDomainCount": 1,
+                "automaticRepairsPolicy": {
+                    "enabled": false,
+                    "gracePeriod": "PT10M",
+                    "repairAction": "Replace"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/extensions",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_VMSS_1_name'), '/HealthExtension')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VMSS_1_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "publisher": "Microsoft.ManagedServices",
+                "type": "ApplicationHealthLinux",
+                "typeHandlerVersion": "1.0",
+                "settings": {
+                    "protocol": "http",
+                    "port": 80,
+                    "intervalInSeconds": 5,
+                    "numberOfProbes": 1,
+                    "requestPath": "/health.html"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_VMSS_1_name'), '/0')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VMSS_1_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_D2s_v3",
+                "tier": "Standard"
+            },
+            "properties": {
+                "networkProfileConfiguration": {
+                    "networkInterfaceConfigurations": [
+                        {
+                            "name": "vnet-eastus-nic01",
+                            "properties": {
+                                "primary": true,
+                                "enableAcceleratedNetworking": true,
+                                "disableTcpStateTracking": false,
+                                "networkSecurityGroup": {
+                                    "id": "[parameters('networkSecurityGroups_basicNsgvnet_eastus_nic01_externalid')]"
+                                },
+                                "dnsSettings": {
+                                    "dnsServers": []
+                                },
+                                "enableIPForwarding": false,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "vnet-eastus-nic01-defaultIpConfiguration",
+                                        "properties": {
+                                            "primary": true,
+                                            "subnet": {
+                                                "id": "[concat(parameters('virtualNetworks_vnet_eastus_externalid'), '/subnets/snet-eastus-1')]"
+                                            },
+                                            "privateIPAddressVersion": "IPv4",
+                                            "loadBalancerBackendAddressPools": [
+                                                {
+                                                    "id": "[concat(parameters('loadBalancers_Loadbalancer1_externalid'), '/backendAddressPools/bepool')]"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D2s_v3"
+                },
+                "resilientVMDeletionStatus": "Disabled",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "canonical",
+                        "offer": "ubuntu-24_04-lts",
+                        "sku": "server",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "VMSS-1_VMSS-1_0_disk1_171830bca6b54b24b9b87bfff05abe2c",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "[parameters('disks_VMSS_1_VMSS_1_0_disk1_171830bca6b54b24b9b87bfff05abe2c_externalid')]"
+                        },
+                        "diskSizeGB": 30
+                    },
+                    "dataDisks": [],
+                    "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "vmss-1v3p000000",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/azureuser/.ssh/authorized_keys",
+                                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVNXwbA51M3HB93HdHE/E3fVKrcPyq+2/LddCLokXidpgOMLvjvOXTO17dotCGc7mnCiLhBvRJ9E/lEGPa8ug/RVgUUeyIDhFsXpc5OSZ28PNAbjvOZVLzFJAqvHZgB1wnLjCsGCqJkITJBz5iTgHcIg8a5o5y4PFWZyHZ8Dv6sfzmtBudncsMyNcbyt3bkiNuijejj7rlwlznexfMjXHLyPEMWv0s0mLVRCYJY6+vt4B4lzv6cHtv/hdpitz6Luk/N1eDgIqH1foAJeIh+ag4fl+zzYX8aOwKwc6UdzWxOuwWa9fcgRgn8yZi4L2VURmdKhmVfvGi3hN5dJDMCTJiSKix5TesJMwn7jE8dokt9ssWQ4C+ckhc0tFf5knJkDeRZXuGLpje+CveXgSX6H/lBN0Zcn9h284WkPnEmNRQI99GXadXHO3g8LuuOi8iveAlDGLGsjlPTyefya4x+nGlsN7dFUm7l0zyGv7WqtWXTbEUlqXqfKIHJmECb8gbyG0= generated-by-azure"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true,
+                    "adminUsername": "azureuser"
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[concat(resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_VMSS_1_name'), '0'), '/networkInterfaces/vnet-eastus-nic01')]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_VMSS_1_name'), '/1')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VMSS_1_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_D2s_v3",
+                "tier": "Standard"
+            },
+            "properties": {
+                "networkProfileConfiguration": {
+                    "networkInterfaceConfigurations": [
+                        {
+                            "name": "vnet-eastus-nic01",
+                            "properties": {
+                                "primary": true,
+                                "enableAcceleratedNetworking": true,
+                                "disableTcpStateTracking": false,
+                                "networkSecurityGroup": {
+                                    "id": "[parameters('networkSecurityGroups_basicNsgvnet_eastus_nic01_externalid')]"
+                                },
+                                "dnsSettings": {
+                                    "dnsServers": []
+                                },
+                                "enableIPForwarding": false,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "vnet-eastus-nic01-defaultIpConfiguration",
+                                        "properties": {
+                                            "primary": true,
+                                            "subnet": {
+                                                "id": "[concat(parameters('virtualNetworks_vnet_eastus_externalid'), '/subnets/snet-eastus-1')]"
+                                            },
+                                            "privateIPAddressVersion": "IPv4",
+                                            "loadBalancerBackendAddressPools": [
+                                                {
+                                                    "id": "[concat(parameters('loadBalancers_Loadbalancer1_externalid'), '/backendAddressPools/bepool')]"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_D2s_v3"
+                },
+                "resilientVMDeletionStatus": "Disabled",
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "canonical",
+                        "offer": "ubuntu-24_04-lts",
+                        "sku": "server",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "VMSS-1_VMSS-1_1_disk1_f1266615be654487b19d779c85067cda",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "[parameters('disks_VMSS_1_VMSS_1_1_disk1_f1266615be654487b19d779c85067cda_externalid')]"
+                        },
+                        "diskSizeGB": 30
+                    },
+                    "dataDisks": [],
+                    "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "vmss-1v3p000001",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/azureuser/.ssh/authorized_keys",
+                                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDVNXwbA51M3HB93HdHE/E3fVKrcPyq+2/LddCLokXidpgOMLvjvOXTO17dotCGc7mnCiLhBvRJ9E/lEGPa8ug/RVgUUeyIDhFsXpc5OSZ28PNAbjvOZVLzFJAqvHZgB1wnLjCsGCqJkITJBz5iTgHcIg8a5o5y4PFWZyHZ8Dv6sfzmtBudncsMyNcbyt3bkiNuijejj7rlwlznexfMjXHLyPEMWv0s0mLVRCYJY6+vt4B4lzv6cHtv/hdpitz6Luk/N1eDgIqH1foAJeIh+ag4fl+zzYX8aOwKwc6UdzWxOuwWa9fcgRgn8yZi4L2VURmdKhmVfvGi3hN5dJDMCTJiSKix5TesJMwn7jE8dokt9ssWQ4C+ckhc0tFf5knJkDeRZXuGLpje+CveXgSX6H/lBN0Zcn9h284WkPnEmNRQI99GXadXHO3g8LuuOi8iveAlDGLGsjlPTyefya4x+nGlsN7dFUm7l0zyGv7WqtWXTbEUlqXqfKIHJmECb8gbyG0= generated-by-azure"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true,
+                    "adminUsername": "azureuser"
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[concat(resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_VMSS_1_name'), '1'), '/networkInterfaces/vnet-eastus-nic01')]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines/extensions",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_VMSS_1_name'), '/0/HealthExtension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_VMSS_1_name'), '0')]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VMSS_1_name'))]"
+            ],
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "publisher": "Microsoft.ManagedServices",
+                "type": "ApplicationHealthLinux",
+                "typeHandlerVersion": "1.0",
+                "settings": {
+                    "protocol": "http",
+                    "port": 80,
+                    "intervalInSeconds": 5,
+                    "numberOfProbes": 1,
+                    "requestPath": "/health.html"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets/virtualMachines/extensions",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(parameters('virtualMachineScaleSets_VMSS_1_name'), '/1/HealthExtension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets/virtualMachines', parameters('virtualMachineScaleSets_VMSS_1_name'), '1')]",
+                "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('virtualMachineScaleSets_VMSS_1_name'))]"
+            ],
+            "properties": {
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true,
+                "publisher": "Microsoft.ManagedServices",
+                "type": "ApplicationHealthLinux",
+                "typeHandlerVersion": "1.0",
+                "settings": {
+                    "protocol": "http",
+                    "port": 80,
+                    "intervalInSeconds": 5,
+                    "numberOfProbes": 1,
+                    "requestPath": "/health.html"
+                }
+            }
+        }
+    ]
+}
