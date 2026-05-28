@@ -1,5 +1,5 @@
 # azure-vmss-arm-template
-![Cloud Architecture Diagram](azure-architecture.png)
+![Cloud Architecture Diagram](azure-architecture.png.png)
 # High Availability and Auto-Scaling Architecture on Azure using VMSS and ARM Templates
 
 ## 📌 Project Overview
